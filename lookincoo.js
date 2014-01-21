@@ -22,8 +22,6 @@
 				$anchorScroll();
 			});
 
-			window.clearInterval(type_character_interval);
-
 			type_next_line();
 		}
 
@@ -45,7 +43,6 @@
 
 			current_line = lines_left.shift();
 			current_character = 0;
-			type_character_interval = window.setInterval(type_next_character, $scope.type_character_time_in_ms);
 		}
 
 		$scope.stop = function() {
@@ -58,11 +55,11 @@
 			current_line = $scope.current_text = '';
 			current_character = 0;
 
+			type_character_interval = window.setInterval(type_next_character, $scope.type_character_time_in_ms);
 			type_next_line();
-		}
+		};
 
-		$scope.current_text = '';
-		type_next_line();
+		$scope.start();
 	}]);
 
 })(window, window.angular);
