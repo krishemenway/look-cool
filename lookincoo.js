@@ -7,12 +7,23 @@
 		$scope.lines = [];
 		$scope.type_character_time_in_ms = 30;
 
-		var initial_lines = angular.fromJson(window.localStorage.getItem('code')),
+		var currently_rendering_text = '',
+			initial_lines = angular.fromJson(window.localStorage.getItem('code')),
 			lines_left = initial_lines.slice(0), // clone
 			type_character_interval = null,
 			current_line = '',
 			line_number = 0,
 			current_character = 0;
+
+		function save_last_text(text) {
+			window.localStorage.setItem('lastText', text);
+		}
+
+		function load_last_text() {
+			var text = window.localStorage.getItem('lastText') || '';
+			initial_lines = text.split(/[\r\n]/g);
+			lines_left = initial_lines.slice(0);
+		}
 
 		function complete_line() {
 			$scope.$apply(function () {
@@ -45,6 +56,13 @@
 			current_character = 0;
 		}
 
+		$scope.reloadSettings = function() {
+			if(currently_rendering_text !== $scope.settingsText) {
+				save_last_text($scope.settingsText);
+				load_last_text();
+			}
+		};
+
 		$scope.stop = function() {
 			$scope.stopped = true;
 			window.clearInterval(type_character_interval);
@@ -58,6 +76,7 @@
 			type_character_interval = window.setInterval(type_next_character, $scope.type_character_time_in_ms);
 			type_next_line();
 		};
+
 
 		$scope.start();
 	}]);

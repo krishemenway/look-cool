@@ -143,17 +143,15 @@
 		</div>
 
 		<div class="settings-menu" ng-show="settingsOpened">
-			<button ng-click="settingsOpened = false"><i class="glyphicon glyphicon-remove-circle"></i></button>
+			<button ng-click="settingsOpened = false; reloadSettings()"><i class="glyphicon glyphicon-remove-circle"></i></button>
 
 			<h2>Settings</h2>
 
 			<label for="intervalTime">Time Between keystrokes (in ms)</label>
 			<input type="text" id="intervalTime" ng-model="type_character_time_in_ms" />
 
-			<label for="printingText">What text do you want to show?</label>
-			<textarea id="printingText" rows="10" cols="80" ng-model="renderingText">
-				
-			</textarea>
+			<label for="changeText">What text do you want to show?</label>
+			<textarea id="changeText" rows="10" cols="80" ng-model="settingsText"></textarea>
 		</div>
 
 		<!-- External -->
