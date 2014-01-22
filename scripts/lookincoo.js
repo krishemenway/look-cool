@@ -8,7 +8,7 @@
 		$scope.type_character_time_in_ms = 30;
 
 		var currently_rendering_text = '',
-			initial_lines = angular.fromJson(window.localStorage.getItem('code')),
+			initial_lines = ['Test-Line 1', 'Test-Line 2', 'Test-Line 3'],
 			lines_left = initial_lines.slice(0), // clone
 			type_character_interval = null,
 			current_line = '',
