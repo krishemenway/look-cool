@@ -3,16 +3,26 @@
 
 	window.lookinCoo = angular.module('lookinCoo', []);
 
+	window.lookinCoo.directive('scrollIf', function () {
+		return function (scope, element, attributes) {
+			setTimeout(function () {
+				if (scope.$eval(attributes.scrollIf)) {
+					element[0].scrollIntoView(false);
+				}
+			});
+		}
+	});
+
 	window.lookinCoo.controller('LookinCoo', ['$scope', '$location','$anchorScroll', function($scope, $location, $anchorScroll) {
 		$scope.lines = [];
 		$scope.type_character_time_in_ms = 30;
+		$scope.line_number = 0;
 
 		var currently_rendering_text = '',
 			initial_lines = ['Test-Line 1', 'Test-Line 2', 'Test-Line 3'],
 			lines_left = initial_lines.slice(0), // clone
 			type_character_interval = null,
 			current_line = '',
-			line_number = 0,
 			current_character = 0;
 
 		function save_last_text(text) {
@@ -20,17 +30,15 @@
 		}
 
 		function load_last_text() {
-			var text = window.localStorage.getItem('lastText') || '';
-			initial_lines = text.split(/[\r\n]/g);
+			$scope.settingsText = window.localStorage.getItem('lastText') || '';
+			initial_lines = $scope.settingsText.split(/[\r\n]/g);
 			lines_left = initial_lines.slice(0);
 		}
 
 		function complete_line() {
 			$scope.$apply(function () {
-				$scope.lines.push({number: line_number++, content: current_line});
+				$scope.lines.push({number: $scope.line_number++, content: current_line});
 				current_line = $scope.current_text = '';
-				$location.hash('line' + (line_number - 1));
-				$anchorScroll();
 			});
 
 			type_next_line();
@@ -77,7 +85,7 @@
 			type_next_line();
 		};
 
-
+		load_last_text();
 		$scope.start();
 	}]);
 

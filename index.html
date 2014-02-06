@@ -1,127 +1,7 @@
 <html>
 	<head>
 		<link href="styles/bootstrap.css" rel="stylesheet" />
-		<style>
-			html,body {
-				background-color: #181818;
-				color: #0F0;
-			}
-
-			* {
-				font-family: monospace, serif;
-			}
-
-			ul {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-			}
-
-			@-webkit-keyframes fadeInOut {
-				0%   { opacity: 0; }
-				100% { opacity: 1; }
-			}
-			@-moz-keyframes fadeInOut {
-				0%   { opacity: 0; }
-				100% { opacity: 1; }
-			}
-			@-o-keyframes fadeInOut {
-				0%   { opacity: 0; }
-				100% { opacity: 1; }
-			}
-			@keyframes fadeInOut {
-				0%   { opacity: 0; }
-				100% { opacity: 1; }
-			}
-
-			.line,.console-input {
-				clear: both;
-			}
-
-			.line-number, .line-content, .console-placeholder, .cursor {
-				float: left;
-				margin: 0;
-				padding: 0;
-			}
-
-			.console-placeholder,.line-content {
-				border-left: 1px solid #686868;
-				padding-left: 10px;
-			}
-
-			.console-placeholder, .cursor {
-				line-height: 30px;
-			}
-
-			.line-number {
-				border-right: 1px solid #282828;
-				min-width: 40px;
-				text-align: right;
-			}
-
-			.console-input {
-				position: fixed;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				height: 30px;
-
-				background-color: #303030;
-				border-top: 2px solid #202020;
-			}
-
-			.inputted-data {
-				position: fixed;
-				overflow-y: scroll;
-				left: 0;
-				right: 0;
-				top: 0;
-				bottom: 30px;
-			}
-
-			.cursor {
-				width: .6em;
-				height: 1.2em;
-				margin-top: 5px;
-				display: block;
-				background-color: #0F0;
-				        animation:fadeInOut 800ms infinite;
-				-webkit-animation:fadeInOut 800ms infinite; /* Safari and Chrome */
-
-			}
-
-
-			.stop,.start,.settings {
-				position: fixed;
-				z-index: 10;
-				font-size: 40px;
-				background-color: transparent;
-				border: 0;
-				color: #d8d8d8;
-			}
-
-			.stop,.start {
-				top: 10px;
-				right: 10px;
-			}
-
-			.settings {
-				top: 10px;
-				right: 60px;
-				font-size: 30px;
-				margin-top: 7px;
-			}
-
-			.settings-menu {
-				position: fixed;
-				top: 20px;
-				bottom: 20px;
-				right: 20px;
-				left: 20px;
-				background-color: #383838;
-				z-index: 15px;
-			}
-		</style>
+		<link href="styles/look-cool.css" rel="stylesheet" />
 	</head>
 
 	<body ng-app="lookinCoo" ng-controller="LookinCoo">
@@ -130,9 +10,9 @@
 		<button type="button" class="settings" ng-hide="settingsOpened" ng-click="settingsOpened = true; stop()"><i class="glyphicon glyphicon-wrench"></i></button>
 
 		<ul class="inputted-data">
-			<li class="line" ng-repeat="line in lines">
+			<li class="line" scroll-if="line.number === line_number - 1" ng-repeat="line in lines">
 				<span class="line-number">{{line.number}}</span>
-				<pre id="line{{line.number}}" class="line-content">{{line.content}}</pre>
+				<pre class="line-content">{{line.content}}</pre>
 			</li>
 		</ul>
 
@@ -143,15 +23,18 @@
 		</div>
 
 		<div class="settings-menu" ng-show="settingsOpened">
-			<button ng-click="settingsOpened = false; reloadSettings()"><i class="glyphicon glyphicon-remove-circle"></i></button>
-
+			<button class="close-settings-menu" ng-click="settingsOpened = false; reloadSettings(); start()"><i class="glyphicon glyphicon-remove-circle"></i></button>
 			<h2>Settings</h2>
 
-			<label for="intervalTime">Time Between keystrokes (in ms)</label>
-			<input type="text" id="intervalTime" ng-model="type_character_time_in_ms" />
+			<p>
+				<label for="intervalTime">Time Between keystrokes (in ms)</label>
+				<input type="text" id="intervalTime" ng-model="type_character_time_in_ms" />
+			</p>
 
-			<label for="changeText">What text do you want to show?</label>
-			<textarea id="changeText" rows="10" cols="80" ng-model="settingsText"></textarea>
+			<p>
+				<label for="changeText">What text do you want to show?</label>
+				<textarea id="changeText" placeholder="Your Text Here ..." rows="10" cols="80" ng-model="settingsText"></textarea>
+			</p>
 		</div>
 
 		<!-- External -->
