@@ -30,8 +30,8 @@ module.exports = {
 		new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
 		new CopyPlugin({
 			patterns: [
-				{ from: "./src/favicon.ico", to: ".", flatten: false },
-				{ from: "./src/**/*.html", to: ".", flatten: true },
+				{ from: "./src/favicon.ico", to: "." },
+				{ from: "./src/**/*.html", to: "./[name].[ext]" },
 			]
 		}),
 	],
