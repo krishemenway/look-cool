@@ -1,0 +1,174 @@
+<html>
+	<head>
+		<title>typing center for america</title>
+
+		<style>
+			@keyframes fadeInOut { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+
+			html, body { background-color: #181818; color: #0F0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif }
+			pre, ul, li, button { margin: 0; padding: 0; border: 0; list-style: none; }
+			button { background: transparent; }
+
+			.line { display: flex; margin: 2px 0; }
+
+			.line-number {
+				border-right: 1px solid #282828;
+				width: 42px;
+				padding-right: 8px;
+				text-align: right;
+			}
+
+			#console-line-input, .line-content {
+				border-left: 1px solid #686868;
+				padding-left: 8px;
+			}
+
+			#console-line-input, #cursor {
+				line-height: 30px;
+			}
+
+			#console-line {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				height: 30px;
+
+				background-color: #303030;
+				border-top: 2px solid #202020;
+			}
+
+			#printer * {
+				font-family: monospace, serif;
+			}
+
+			#lines {
+				position: fixed;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 30px;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-end;
+			}
+
+			#cursor {
+				width: .6em;
+				height: 1.2em;
+				margin-top: 5px;
+				display: block;
+				background-color: #0F0;
+				animation: fadeInOut 800ms infinite;
+			}
+
+			#control-panel {
+				position: fixed;
+				top: 24px;
+				right: 24px;
+				z-index: 2;
+				font-size: 0;
+			}
+
+			#settings-overlay {
+				position: fixed;
+				background-color: #383838;
+				z-index: 2;
+				padding: 20px;
+				left: 50%;
+				max-width: 500px;
+				min-width: 250px;
+				margin-left: -250px;
+				top: 100px;
+			}
+
+			#settings-speed-picker {
+				margin-bottom: 16px;
+			}
+
+			#settings-speed-picker-label {
+				font-size: 20px;
+				margin-bottom: 8px;
+			}
+
+			#settings-overlay-header {
+				font-size: 24px;
+				margin-bottom: 16px;
+			}
+
+			#change-text-label {
+				margin-bottom: 8px;
+				font-size: 20px;
+				display: block;
+			}
+
+			@media (max-width: 550px) {
+				#settings-overlay {
+					width: 100%;
+					margin: 0;
+				}
+			}
+
+			#changeText {
+				display: block;
+				width: 100%;
+				height: 250px;
+				background: transparent;
+				border: 0;
+				color: #0F0;
+			}
+
+			#close-settings-overlay { position: absolute; top: 16px; right: 16px; }
+			#change-play-status { margin-right: 16px; }
+		</style>
+	</head>
+
+	<body>
+		<div id="control-panel">
+			<button type="button" id="change-play-status">
+				<svg id="play" style="display: block" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" fill="white" width="48px" height="48px"><g><rect fill="none" height="24" width="24"/></g><g><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M9.5,16.5v-9l7,4.5L9.5,16.5z"/></g></svg>
+				<svg id="pause" style="display: none" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" fill="white" width="48px" height="48px"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M11,16H9V8h2V16z M15,16h-2V8h2V16z"/></g></g></svg>
+			</button>
+			<button type="button" id="toggle-settings">
+				<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" fill="white" width="48px" height="48px"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></g></svg>
+			</button>
+		</div>
+
+		<div id="printer">
+			<ul id="lines"></ul>
+
+			<div id="console-line" class="line">
+				<div id="line-number" class="line-number">&nbsp;</div>
+				<pre id="console-line-input"></pre>
+				<span id="cursor"></span>
+			</div>
+		</div>
+
+		<div id="settings-overlay" style="display: none">
+			<button id="close-settings-overlay">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="36px" width="36px" fill="white"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+			</button>
+
+			<div id="settings-overlay-header">Settings</div>
+
+			<div id="settings-speed-picker">
+				<div id="settings-speed-picker-label">Speed</div>
+				<div>
+					<label><input name="speed" type="radio" value="80" />Very Slow</label>
+					<label><input name="speed" type="radio" value="65" />Slow</label>
+					<label><input name="speed" type="radio" value="50" checked="checked" />Normal</label>
+					<label><input name="speed" type="radio" value="35" />Fast</label>
+					<label><input name="speed" type="radio" value="15" />Very Fast</label>
+				</div>
+			</div>
+
+			<div id="settings-change-text">
+				<label id="change-text-label" for="change-text-input">Text to Type</label>
+				<textarea id="change-text-input" placeholder="Your Text Here ..." rows="10" cols="80" style="width: 100%"></textarea>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="app.js"></script>
+	</body>
+
+</html>
